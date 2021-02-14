@@ -1,0 +1,20 @@
+.container-register form {
+   display: grid;
+   gap: 12px;
+}
+.input-block {
+    display: grid;
+}
+.input-block input {
+    border: none;
+    background-color: #e5f3f7;
+    padding: 12px;
+}
+input.valide {
+    background-color: #e8ffc6;
+    outline-color: greenyellow;
+}
+input.invalide {
+    background-color: #ffd6d6;
+    outline-color: red;
+}
