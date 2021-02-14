@@ -1,7 +1,11 @@
 * {
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;900&display=swap');
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
