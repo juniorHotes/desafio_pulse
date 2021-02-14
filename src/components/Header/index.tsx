@@ -10,7 +10,7 @@ interface PageHeaderProps {
 }
 
 const Header: React.FC<PageHeaderProps> = ({ title, isPageRegister, isPageLogin }: PageHeaderProps) => {
-  const btnRegister = isPageRegister ? null : <Link className="header-buttons" to="/register"><h3>Cadastre-se</h3></Link>
+  const btnRegister = isPageRegister ? null : <Link className="header-buttons" to="/register"><h3>Criar conta</h3></Link>
   const btnLogin = isPageLogin ? null : <Link className="header-buttons" to="/login"><h3>Fazer login</h3></Link>
 
   return (
