@@ -18,31 +18,16 @@ function RegisterUser(): ReactElement {
     const [vldEmail, setVldEmail] = useState<[string, string]>(["", ""])
     const [vldPwd, setValidatePwd] = useState<[string, string]>(["", ""])
     const [vldConfirmPwd, setVldConfirmPwd] = useState<[string, string]>(["", ""])
-    const [formValide, setFormValide] = useState(true)
-
-    const [validated, setValidated] = useState([false,false,false,false])
-
-    function ValidatedInputs(vld: any) {
-        setValidated(vld)
-
-        const confirmed = validated.every(item => item == true)
-
-        confirmed ? setFormValide(false) : setFormValide(true)
-
-        console.log(vld)
-        console.log(confirmed)
-    }
     
     function validateName(value: string) {
         setName(value)
 
         if (value.length >= 4) {
-            setVldName(["valide", "Ok!"])
-            ValidatedInputs([true,validated[1],validated[2],validated[3]])
+            setVldName(["valide", ""])
         } else {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
-            ValidatedInputs([false,validated[1],validated[2],validated[3]])
-        }
+        } 
+        if(value === "") setVldName(["", ""])
     }
 
     function validateEmail(value: string) {
@@ -50,37 +35,33 @@ function RegisterUser(): ReactElement {
         const atSign = value.indexOf('@')
 
         if (atSign != -1) {
-            setVldEmail(["valide", "Ok!"])
-            ValidatedInputs([validated[0],true,validated[2],validated[3]])
+            setVldEmail(["valide", ""])
         } else {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
-            ValidatedInputs([validated[0],false,validated[2],validated[3]])
         }
-
+        if(value === "") setVldEmail(["", ""])
     }
 
     function validatePassword(value: string) {
         setPassword(value)
 
         if (value.length >= 8) {
-            setValidatePwd(["valide", "Ok!"])
-            ValidatedInputs([validated[0],validated[1],true,validated[3]])
+            setValidatePwd(["valide", ""])
         } else {
             setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
-            ValidatedInputs([validated[0],validated[1],false,validated[3]])
         }
+        if(value === "") setValidatePwd(["", ""])
     }
 
     function validateLikenPassword(value: string) {
         setConfirmPassword(value)
 
         if (value === password) {
-            setVldConfirmPwd(["valide", "Ok!"])
-            ValidatedInputs([validated[0],validated[1],validated[2],true])
+            setVldConfirmPwd(["valide", ""])
         } else {
             setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
-            ValidatedInputs([validated[0],validated[1],validated[2],false])
         }
+        if(value === "") setVldConfirmPwd(["", ""])
     }
 
     //#endregion
@@ -117,7 +98,7 @@ function RegisterUser(): ReactElement {
 
                 localStorage.setItem("users", JSON.stringify(data))
 
-                alert('Você foi cadastado com sucesso!\nVocê será redirecionado para página de login.\nMuito obrigado!')
+                alert('Você foi cadastado com sucesso!\nMuito obrigado!')
 
                 history.push('/login')
             }
@@ -125,11 +106,11 @@ function RegisterUser(): ReactElement {
     }
     return (
         <>
-            <Header title={"Pulse"} isPageRegister={true} />
+            <Header title={"Pulse"} btnLogin={true} />
             <div className="container">
                 <div className="container-register">
                     <form onSubmit={handleCreateUser} >
-                        <h1>Faça seu cadastro em nosso site</h1>
+                        <h1>Faça seu cadastro</h1>
                         <span>Todos os campos são obrigatórios</span>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
@@ -156,7 +137,7 @@ function RegisterUser(): ReactElement {
                             validate={vldConfirmPwd}
                         />
 
-                        <button disabled={formValide} type="submit">Criar conta</button>
+                        <button type="submit">Criar conta</button>
                     </form>
                 </div>
             </div>

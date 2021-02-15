@@ -4,6 +4,7 @@
 }
 .input-block {
     display: grid;
+    grid-template-rows: 1.2rem 1fr 1.2rem;
 }
 .input-block input {
     border: none;
@@ -17,4 +18,10 @@ input.valide {
 input.invalide {
     background-color: #ffd6d6;
     outline-color: red;
+}
+.invalide-span {
+    color: red;
+}
+.valide-span {
+    color: greenyellow;
 }

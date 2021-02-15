@@ -10,6 +10,8 @@ function EditUser(props: any): ReactElement {
 
     const user = data.filter((item: any) => item.id == props.match.params.id)[0]
 
+    console.log(data)
+
     const [name, setName] = useState(user.name)
     const [email, setEmail] = useState(user.email)
     const [password, setPassword] = useState('')
@@ -24,8 +26,6 @@ function EditUser(props: any): ReactElement {
 
     function validateName(value: string) {
         setName(value)
-        // value.length >= 4 ? setVldName(["valide", "Ok!"]) :
-        //     setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
         if (value.length >= 4) {
             setVldName(["valide", "Ok!"])
             setFormValide(false)
@@ -33,14 +33,11 @@ function EditUser(props: any): ReactElement {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
             setFormValide(true)
         }
-
     }
 
     function validateEmail(value: string) {
         setEmail(value)
         const atSign = value.indexOf('@')
-        // atSign != -1 ? setVldEmail(["valide", "Ok!"]) :
-        //     setVldEmail(["invalide", "Forneça um E-mail válido"])
         if (atSign != -1) {
             setVldEmail(["valide", "Ok!"])
             setFormValide(false)
@@ -48,14 +45,10 @@ function EditUser(props: any): ReactElement {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
             setFormValide(true)
         }
-
     }
 
     function validatePassword(value: string) {
         setPassword(value)
-        // value.length >= 8 ? setValidatePwd(["valide", "Ok!"]) :
-        //     setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
-
         if (value.length >= 8) {
             setValidatePwd(["valide", "Ok!"])
             setFormValide(false)
@@ -63,14 +56,10 @@ function EditUser(props: any): ReactElement {
             setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
             setFormValide(true)
         }
-
     }
 
     function validateLikenPassword(value: string) {
         setLikenpassword(value)
-        value === password ? setVldLikenPwd(["valide", "Ok!"]) :
-            setVldLikenPwd(["invalide", "Repita a mesma senha que dígitou acima"])
-
         if (value === password) {
             setVldLikenPwd(["valide", "Ok!"])
             setFormValide(false)
@@ -78,57 +67,21 @@ function EditUser(props: any): ReactElement {
             setVldLikenPwd(["invalide", "Repita a mesma senha que dígitou acima"])
             setFormValide(true)
         }
-
     }
 
     //#endregion
-    
+
     function handleCreateUser(e: FormEvent) {
-        e.preventDefault();
-
-        const storage = localStorage.getItem("users")
-
-        if (storage == undefined) {
-            localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
-            console.log(localStorage.getItem("users"))
-        } else {
-            const data = JSON.parse(storage)
-
-            const userExist = data.filter((e: any) => {
-                if (e.name === name) {
-                    setVldName(["invalide", "Este nome já existe, forneça um outro nome"])
-                    return name
-                } else {
-                    setVldName(["valide", "Ok!"])
-                }
-
-                // if(e.email == email) {
-                //     setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
-                //     return email
-                // } else {
-                //     setVldEmail(["valide", "Ok!"])
-                // }
-            })
-
-            console.log(userExist)
-
-            const id = data.length + 1
-            data.push({ id, name, email, password })
-
-            // localStorage.setItem("users", JSON.stringify(data))
-
-            console.log(data)
-        }
     }
 
     return (
         <>
-            <Header title={"Pulse"} isPageRegister={true} />
+            <Header title={"Pulse"} btnRegister={false} btnLogin={false} btnLogout={true} />
             <div className="container">
                 <div className="container-register">
                     <form onSubmit={handleCreateUser} >
                         <h1>Edite seus dados de cadastro</h1>
-                        <span>Todos os campos são obrigatórios</span>
+                        <span>Edite apenas os dados que desejar</span>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
                             onChange={e => validateName(e.target.value)}
@@ -142,19 +95,27 @@ function EditUser(props: any): ReactElement {
                             validate={vldEmail}
                         />
 
-                        <Input inputType="password" label="Senha" name="password" placeholder="********"
-                            onChange={e => validatePassword(e.target.value)}
-                            value={password}
-                            validate={vldPwd}
-                        />
+                        <h3>Editar senha</h3>
 
-                        <Input inputType="password" label="Repita a senha" name="likenpassword" placeholder="********"
+                        <Input inputType="password" label="Nova senha" name="likenpassword" placeholder="********"
                             onChange={e => validateLikenPassword(e.target.value)}
                             value={likenpassword}
                             validate={vldLinkenPwd}
                         />
 
-                        <button disabled={formValide} type="submit">Criar conta</button>
+                        <Input inputType="password" label="Repita a nova senha" name="likenpassword" placeholder="********"
+                            onChange={e => validateLikenPassword(e.target.value)}
+                            value={likenpassword}
+                            validate={vldLinkenPwd}
+                        />
+
+                        <Input inputType="password" label="Antiga senha" name="password" placeholder="********"
+                            onChange={e => validatePassword(e.target.value)}
+                            value={password}
+                            validate={vldPwd}
+                        />
+
+                        <button disabled={formValide} type="submit">Salvar</button>
                     </form>
                 </div>
             </div>

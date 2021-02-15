@@ -15,7 +15,7 @@ const Input: React.FC<InputProps> = ({ inputType, label, name, validate, ...rest
     <div className="input-block">
       <label htmlFor={name}>{label}</label>
       <input className={validate?.[0]} type={inputType} id={name} {...rest} required />
-      <span>{validate?.[1]}</span>
+      <span className={`${validate?.[0]}-span`}>{validate?.[1]}</span>
     </div>
   );
 }
