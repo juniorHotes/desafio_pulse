@@ -8,9 +8,6 @@ function EditUser(props: any): ReactElement {
     const storage: any = localStorage.getItem("users")
     const data = JSON.parse(storage)
 
-    console.log(data)
-    console.log(props.match.params.id)
-
     const user = data.filter((item: any) => item.id == props.match.params.id)[0]
 
     const [name, setName] = useState(user.name)
@@ -123,7 +120,7 @@ function EditUser(props: any): ReactElement {
             console.log(data)
         }
     }
-    
+
     return (
         <>
             <Header title={"Pulse"} isPageRegister={true} />
@@ -133,25 +130,25 @@ function EditUser(props: any): ReactElement {
                         <h1>Edite seus dados de cadastro</h1>
                         <span>Todos os campos são obrigatórios</span>
 
-                        <Input label="Nome" name="name" placeholder="Ex: Jhon"
+                        <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
                             onChange={e => validateName(e.target.value)}
                             value={name}
                             validate={vldName}
                         />
 
-                        <Input label="Email" name="email" placeholder="Ex: exemplo@email.com"
+                        <Input inputType="text" label="Email" name="email" placeholder="Ex: exemplo@email.com"
                             onChange={e => validateEmail(e.target.value)}
                             value={email}
                             validate={vldEmail}
                         />
 
-                        <Input label="Senha" name="password" placeholder="********"
+                        <Input inputType="password" label="Senha" name="password" placeholder="********"
                             onChange={e => validatePassword(e.target.value)}
                             value={password}
                             validate={vldPwd}
                         />
 
-                        <Input label="Repita a senha" name="likenpassword" placeholder="********"
+                        <Input inputType="password" label="Repita a senha" name="likenpassword" placeholder="********"
                             onChange={e => validateLikenPassword(e.target.value)}
                             value={likenpassword}
                             validate={vldLinkenPwd}

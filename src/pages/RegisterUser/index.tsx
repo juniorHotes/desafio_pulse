@@ -1,83 +1,89 @@
 import React, { ReactElement, useState, FormEvent } from 'react'
+import { useHistory } from 'react-router-dom'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
 import './styles.css'
 
 /*========== CADASTRO DE USUÁRIO ==========*/
 function RegisterUser(): ReactElement {
+    const history = useHistory()
+
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [likenpassword, setLikenpassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
 
-//#region VALIDAÇÃO DE FORMULÁRIO
+    //#region VALIDAÇÃO DE FORMULÁRIO
     const [vldName, setVldName] = useState<[string, string]>(["", ""])
     const [vldEmail, setVldEmail] = useState<[string, string]>(["", ""])
     const [vldPwd, setValidatePwd] = useState<[string, string]>(["", ""])
-    const [vldLinkenPwd, setVldLikenPwd] = useState<[string, string]>(["", ""])
+    const [vldConfirmPwd, setVldConfirmPwd] = useState<[string, string]>(["", ""])
     const [formValide, setFormValide] = useState(true)
 
+    const [validated, setValidated] = useState([false,false,false,false])
 
+    function ValidatedInputs(vld: any) {
+        setValidated(vld)
+
+        const confirmed = validated.every(item => item == true)
+
+        confirmed ? setFormValide(false) : setFormValide(true)
+
+        console.log(vld)
+        console.log(confirmed)
+    }
+    
     function validateName(value: string) {
         setName(value)
-        // value.length >= 4 ? setVldName(["valide", "Ok!"]) :
-        //     setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
+
         if (value.length >= 4) {
             setVldName(["valide", "Ok!"])
-            setFormValide(false)
+            ValidatedInputs([true,validated[1],validated[2],validated[3]])
         } else {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
-            setFormValide(true)
+            ValidatedInputs([false,validated[1],validated[2],validated[3]])
         }
-
     }
 
     function validateEmail(value: string) {
         setEmail(value)
         const atSign = value.indexOf('@')
-        // atSign != -1 ? setVldEmail(["valide", "Ok!"]) :
-        //     setVldEmail(["invalide", "Forneça um E-mail válido"])
+
         if (atSign != -1) {
             setVldEmail(["valide", "Ok!"])
-            setFormValide(false)
+            ValidatedInputs([validated[0],true,validated[2],validated[3]])
         } else {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
-            setFormValide(true)
+            ValidatedInputs([validated[0],false,validated[2],validated[3]])
         }
 
     }
 
     function validatePassword(value: string) {
         setPassword(value)
-        // value.length >= 8 ? setValidatePwd(["valide", "Ok!"]) :
-        //     setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
 
         if (value.length >= 8) {
             setValidatePwd(["valide", "Ok!"])
-            setFormValide(false)
+            ValidatedInputs([validated[0],validated[1],true,validated[3]])
         } else {
             setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
-            setFormValide(true)
+            ValidatedInputs([validated[0],validated[1],false,validated[3]])
         }
-
     }
 
     function validateLikenPassword(value: string) {
-        setLikenpassword(value)
-        value === password ? setVldLikenPwd(["valide", "Ok!"]) :
-            setVldLikenPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+        setConfirmPassword(value)
 
         if (value === password) {
-            setVldLikenPwd(["valide", "Ok!"])
-            setFormValide(false)
+            setVldConfirmPwd(["valide", "Ok!"])
+            ValidatedInputs([validated[0],validated[1],validated[2],true])
         } else {
-            setVldLikenPwd(["invalide", "Repita a mesma senha que dígitou acima"])
-            setFormValide(true)
+            setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+            ValidatedInputs([validated[0],validated[1],validated[2],false])
         }
-
     }
 
-//#endregion
+    //#endregion
 
     function handleCreateUser(e: FormEvent) {
         e.preventDefault();
@@ -86,34 +92,35 @@ function RegisterUser(): ReactElement {
 
         if (storage == undefined) {
             localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
-            console.log(localStorage.getItem("users"))
         } else {
             const data = JSON.parse(storage)
 
-            const userExist = data.filter((e: any) => {
-                if (e.name === name) {
-                    setVldName(["invalide", "Este nome já existe, forneça um outro nome"])
+            const userExist = data.find((user: any) => {
+                if (user.name === name) {
+                    setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
                     return name
                 } else {
                     setVldName(["valide", "Ok!"])
                 }
 
-                // if(e.email == email) {
-                //     setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
-                //     return email
-                // } else {
-                //     setVldEmail(["valide", "Ok!"])
-                // }
+                if (user.email == email) {
+                    setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
+                    return email
+                } else {
+                    setVldEmail(["valide", "Ok!"])
+                }
             })
 
-            console.log(userExist)
+            if (userExist == undefined) {
+                const id = data.length + 1
+                data.push({ id, name, email, password })
 
-            const id = data.length + 1
-            data.push({ id, name, email, password })
+                localStorage.setItem("users", JSON.stringify(data))
 
-            // localStorage.setItem("users", JSON.stringify(data))
+                alert('Você foi cadastado com sucesso!\nVocê será redirecionado para página de login.\nMuito obrigado!')
 
-            console.log(data)
+                history.push('/login')
+            }
         }
     }
     return (
@@ -125,28 +132,28 @@ function RegisterUser(): ReactElement {
                         <h1>Faça seu cadastro em nosso site</h1>
                         <span>Todos os campos são obrigatórios</span>
 
-                        <Input label="Nome" name="name" placeholder="Ex: Jhon"
+                        <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
                             onChange={e => validateName(e.target.value)}
                             value={name}
                             validate={vldName}
                         />
 
-                        <Input label="Email" name="email" placeholder="Ex: exemplo@email.com"
+                        <Input inputType="text" label="Email" name="email" placeholder="Ex: exemplo@email.com"
                             onChange={e => validateEmail(e.target.value)}
                             value={email}
                             validate={vldEmail}
                         />
 
-                        <Input label="Senha" name="password" placeholder="********"
+                        <Input inputType="password" label="Senha" name="password" placeholder="********"
                             onChange={e => validatePassword(e.target.value)}
                             value={password}
                             validate={vldPwd}
                         />
 
-                        <Input label="Repita a senha" name="likenpassword" placeholder="********"
+                        <Input inputType="password" label="Repita a senha" name="confirmPassword" placeholder="********"
                             onChange={e => validateLikenPassword(e.target.value)}
-                            value={likenpassword}
-                            validate={vldLinkenPwd}
+                            value={confirmPassword}
+                            validate={vldConfirmPwd}
                         />
 
                         <button disabled={formValide} type="submit">Criar conta</button>

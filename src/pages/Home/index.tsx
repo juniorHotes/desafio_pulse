@@ -7,15 +7,19 @@ function Home(): ReactElement {
     const storage: any = localStorage.getItem("users")
     const data = JSON.parse(storage)
 
+    function createCard() {
+        if(storage == undefined) return <h2>Não há usuários cadastrados <br></br> Seja o primeiro e faça seu cadastro.</h2>
+        else return data.map((e: any) =>
+            <Link key={e?.id} to={`/edit/user/${e?.id}`} >
+                <CardUser key={e?.id} name={e?.name} email={e?.email} />
+            </Link>)
+    }
+
     return (
         <>
             <Header title={"Pulse"} />
             <div className="container">
-                <h1>Página Home</h1>
-                {data.map((e: any) =>
-                    <Link key={e?.id} to={`/edit/user/${e?.id}`} >
-                        <CardUser key={e?.id} name={e?.name} email={e?.email} />
-                    </Link>)}
+                {createCard()}
             </div>
         </>
     )
