@@ -53,7 +53,7 @@ function RegisterUser(): ReactElement {
         if(value === "") setValidatePwd(["", ""])
     }
 
-    function validateLikenPassword(value: string) {
+    function validateConfirmPassword(value: string) {
         setConfirmPassword(value)
 
         if (value === password) {
@@ -132,7 +132,7 @@ function RegisterUser(): ReactElement {
                         />
 
                         <Input inputType="password" label="Repita a senha" name="confirmPassword" placeholder="********"
-                            onChange={e => validateLikenPassword(e.target.value)}
+                            onChange={e => validateConfirmPassword(e.target.value)}
                             value={confirmPassword}
                             validate={vldConfirmPwd}
                         />

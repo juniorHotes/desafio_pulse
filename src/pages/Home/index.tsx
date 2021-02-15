@@ -1,11 +1,16 @@
 import React, { ReactElement, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom'
 import Header from '../../components/Header'
 import CardUser from '../../components/CardUser'
 import { Link } from 'react-router-dom';
 
 function Home(): ReactElement {
+    const history = useHistory()
+
     const storage: any = localStorage.getItem("users")
-    const data = JSON.parse(storage)
+    const data = Object(JSON.parse(storage))
+
+    data.sort((a: any, b: any) => b.id - a.id)
 
     const [logged, setLogged] = useState(true)
 
@@ -29,6 +34,7 @@ function logout() {
     sessionStorage.clear()
     alert("Sua sessão foi encerrada")
     setLogged(false)
+    history.push('/login')
 }
 
 return (
