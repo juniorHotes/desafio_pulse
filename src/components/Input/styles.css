@@ -1,27 +1,24 @@
-.container-register form {
-   display: grid;
-   gap: 12px;
-}
 .input-block {
     display: grid;
     grid-template-rows: 1.2rem 1fr 1.2rem;
 }
 .input-block input {
-    border: none;
-    background-color: #e5f3f7;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid var(--color-input-border);
+    outline: none;
+    background-color: var(--color-input-background);
     padding: 12px;
 }
 input.valide {
     background-color: #e8ffc6;
-    outline-color: greenyellow;
+    outline-color: #adff2f;
 }
 input.invalide {
     background-color: #ffd6d6;
-    outline-color: red;
+    outline-color: #ff0000;
 }
 .invalide-span {
-    color: red;
-}
-.valide-span {
-    color: greenyellow;
+    color: #ff0000;
 }

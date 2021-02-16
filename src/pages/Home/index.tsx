@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import Header from '../../components/Header'
 import CardUser from '../../components/CardUser'
 import { Link } from 'react-router-dom';
+import Footer from '../../components/Footer';
 
 function Home(): ReactElement {
     const history = useHistory()
@@ -39,12 +40,13 @@ function logout() {
 }
 
 return (
-    <>
+    <main>
         <Header title={"Pulse"} btnRegister={!logged} btnLogin={!logged} btnLogout={logged} logout={logout} />
         <div className="container">
             {createCard()}
         </div>
-    </>
+        <Footer />
+    </main>
 )
 }
 

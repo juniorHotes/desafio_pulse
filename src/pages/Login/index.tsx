@@ -1,5 +1,6 @@
 import React, { FormEvent, ReactElement, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import Footer from '../../components/Footer'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
 
@@ -56,10 +57,10 @@ function Login(): ReactElement {
         }
     }
     return (
-        <>
+        <main>
             <Header title={"Pulse"} btnRegister={true} />
             <div className="container">
-                <div className="container-register">
+                <div className="container-form">
                     <form onSubmit={handleAuthUser} >
                         <h1>Entre com seu usuário</h1>
 
@@ -81,9 +82,9 @@ function Login(): ReactElement {
                         <button type="submit">Entrar</button>
                     </form>
                 </div>
-
             </div>
-        </>
+            <Footer />
+        </main>
     )
 }
 

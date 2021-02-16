@@ -1,8 +1,8 @@
 import React, { ReactElement, useState, FormEvent } from 'react'
 import { useHistory } from 'react-router-dom'
+import Footer from '../../components/Footer'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
-import './styles.css'
 
 /*========== CADASTRO DE USUÁRIO ==========*/
 function RegisterUser(): ReactElement {
@@ -110,13 +110,18 @@ function RegisterUser(): ReactElement {
         }
     }
     return (
-        <>
+        <main>
             <Header title={"Pulse"} btnLogin={true} />
             <div className="container">
-                <div className="container-register">
+                <div className="container-form">
                     <form onSubmit={handleCreateUser} >
                         <h1>Faça seu cadastro</h1>
                         <span>Todos os campos são obrigatórios</span>
+
+                        <div className="container-profile">
+                            <input type="file" name="Foto" id="foto"/>
+
+                        </div>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
                             autoFocus={true}
@@ -159,7 +164,8 @@ function RegisterUser(): ReactElement {
                     </form>
                 </div>
             </div>
-        </>
+            <Footer />
+        </main>
     )
 }
 

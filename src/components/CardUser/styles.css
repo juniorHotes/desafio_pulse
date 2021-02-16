@@ -1,6 +1,7 @@
 .container-card {
     width: 23rem;
     margin: 1rem;
+    background-color: var(--color-primary-light);
     box-shadow: 0px 0px 8px rgb(0 0 0 / 20%);
     border-radius: 20px 20px 0 0;
 }
@@ -9,11 +10,12 @@
     display: grid;
     min-height: 6rem;
     border-radius: 20px 20px 0 0;
-    color: black;
+    color: var(--color-text-title);
 }
 .container-card img {
     border-radius: 20px 20px 0 0;
 }
 .container-card div p {
     align-self: end;
+    color: var(--color-text-complement);
 }

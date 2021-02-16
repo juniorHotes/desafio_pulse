@@ -1,14 +1,21 @@
 import React, { ReactElement, useState, FormEvent, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import Footer from '../../components/Footer'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
-import './styles.css'
 
 /*========== EDITAR USUÁRIO ==========*/
 function EditUser(props: any): ReactElement {
     const history = useHistory()
 
+    const [logged, setLogged] = useState(true)
+
     useEffect(() => {
+        const session = sessionStorage.key(0)
+
+        if (session == undefined) setLogged(false)
+        else setLogged(true)
+
         const storage: any = localStorage.getItem("users")
         const data = JSON.parse(storage)
 
@@ -151,11 +158,18 @@ function EditUser(props: any): ReactElement {
         }
     }
 
+    function logout() {
+        sessionStorage.clear()
+        alert("Sua sessão foi encerrada")
+        setLogged(false)
+        history.push('/login')
+    }
+    
     return (
-        <>
-            <Header title={"Pulse"} btnRegister={false} btnLogin={false} btnLogout={true} />
+        <main>
+            <Header title={"Pulse"} btnRegister={!logged} btnLogin={!logged} btnLogout={logged} logout={logout}/>
             <div className="container">
-                <div className="container-register">
+                <div className="container-form">
                     <form onSubmit={handleCreateUser} >
                         <h1>Edite seus dados de cadastro</h1>
                         <span>Você pode editar apenas os dados que desejar</span>
@@ -212,11 +226,12 @@ function EditUser(props: any): ReactElement {
                         <button type="submit">Salvar</button>
                     </form>
                     <form onSubmit={handleDeleteUser} >
-                        <button type="submit">Excuir conta</button>
+                        <button className="danger" type="submit">Excuir conta</button>
                     </form>
                 </div>
             </div>
-        </>
+            <Footer />
+        </main>
     )
 }
 
