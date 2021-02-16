@@ -11,7 +11,9 @@ function Home(): ReactElement {
     const storage: any = localStorage.getItem("users")
     const data = Object(JSON.parse(storage))
 
-    data.sort((a: any, b: any) => b.id - a.id)
+    if(storage != undefined)
+        data.sort((a: any, b: any) => b.id - a.id)
+
     console.log(data)
 
     const [logged, setLogged] = useState(true)
@@ -24,8 +26,8 @@ function Home(): ReactElement {
     }, [])
 
     function createCard() {
-        if (storage == undefined) return <h2>Não há usuários cadastrados <br></br>
-        Seja o primeiro e faça seu cadastro agora.</h2>
+        if (storage == undefined) return <h1>Não há usuários cadastrados <br></br>
+        Seja o primeiro e faça seu cadastro agora.</h1>
         else return data.map((e: any) =>
             <Link key={e?.id} to={`/edit/user/${e?.id}`} >
                 <CardUser key={e?.id} name={e?.name} email={e?.email} />
@@ -43,7 +45,9 @@ return (
     <main>
         <Header title={"Pulse"} btnRegister={!logged} btnLogin={!logged} btnLogout={logged} logout={logout} />
         <div className="container">
-            {createCard()}
+            <div className="container-cards">
+                {createCard()}
+            </div>
         </div>
         <Footer />
     </main>

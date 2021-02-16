@@ -14,9 +14,9 @@ interface PageHeaderProps {
 
 const Header: React.FC<PageHeaderProps> = ({ title, btnRegister, btnLogin, btnLogout, logout }: PageHeaderProps) => {
 
-  const _register = btnRegister ? <Link className="header-buttons" to="/register"><h3>Criar conta</h3></Link> : false
-  const _login = btnLogin ? <Link className="header-buttons" to="/login"><h3>Entrar</h3></Link> : false
-  const _logout = btnLogout ? <Link onClick={logout} className="header-buttons" to="#"><h3>Sair</h3></Link> : false
+  const _register = btnRegister ? <Link className="header-buttons" to="/register">Criar conta</Link> : false
+  const _login = btnLogin ? <Link className="header-buttons" to="/login">Entrar</Link> : false
+  const _logout = btnLogout ? <Link onClick={logout} className="header-buttons" to="#">Sair</Link> : false
 
   return (
     <header className="page-header">

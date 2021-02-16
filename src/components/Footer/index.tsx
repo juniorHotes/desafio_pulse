@@ -6,7 +6,7 @@ import './styles.css';
 function Footer(): ReactElement {
     return (
         <footer>
-            <strong>2020 © Grupo Mateus | Todos os direitos reservados</strong>
+            <span>2020 © Grupo Mateus | Todos os direitos reservados</span>
         </footer>
   );
 }

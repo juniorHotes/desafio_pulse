@@ -27,19 +27,26 @@ function Login(): ReactElement {
 
     function handleUser(value: string) {
         setVldName(["", ""])
-
         setName(value)
-        const isUserName = userData.find((e: any) => {
-            return e.name == value || e.email == value 
-        });
 
-        setUser(isUserName)
+        if(userData != undefined) {
+            const isUserName = userData.find((e: any) => {
+                return e.name == value || e.email == value 
+            });
+    
+            setUser(isUserName)
+        }
     }
 
     function handleAuthUser(e: FormEvent) {
         e.preventDefault()
 
-        if (user == undefined) {
+        if(name.length == 0) {
+            setVldName(["invalide", "Dígite o seu usuário"])
+            return
+        }
+
+        if (name.length > 0 && user == undefined) {
             setVldName(["invalide", "Este usuário não está cadastrado"])
         } else {
             setVldName(["", ""])

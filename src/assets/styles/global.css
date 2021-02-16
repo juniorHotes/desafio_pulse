@@ -33,7 +33,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    flex-wrap: wrap;
 }
 
 .container-form {
@@ -49,6 +48,15 @@ body {
     display: grid;
     gap: 12px;
  }
+
+.container-cards {
+    margin-top: 12px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
 button[type=submit] {
     font-size: 1rem;
