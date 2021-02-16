@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import './styles.css';
@@ -19,7 +19,7 @@ const Header: React.FC<PageHeaderProps> = ({ title, btnRegister, btnLogin, btnLo
   const _logout = btnLogout ? <Link onClick={logout} className="header-buttons" to="#">Sair</Link> : false
 
   return (
-    <header className="page-header">
+    <header className="page-header" >
       <div className="logo-content">
         <Link className="header-logo" to="/">
           <img width="120px" src={Logo} alt="Logo" title="Logo Grupo Mateus" />

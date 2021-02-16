@@ -50,11 +50,11 @@ body {
  }
 
 .container-cards {
+    min-width: 100%;
     margin-top: 12px;
     text-align: center;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
 }
 
@@ -74,4 +74,10 @@ button.danger {
 
 button[type=submit]:hover {
     filter: brightness(.9);
+}
+
+@media only screen and (max-width: 1170px) {
+    .container-cards {
+        justify-content: center;
+    }
 }

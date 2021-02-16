@@ -77,6 +77,10 @@ function RegisterUser(): ReactElement {
 
             if (storage == undefined) {
                 localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
+
+                alert('Você foi cadastado com sucesso!\nMuito obrigado!')
+
+                history.push('/login')
             } else {
                 const data = JSON.parse(storage)
 
