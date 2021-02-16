@@ -11,6 +11,7 @@ function Home(): ReactElement {
     const data = Object(JSON.parse(storage))
 
     data.sort((a: any, b: any) => b.id - a.id)
+    console.log(data)
 
     const [logged, setLogged] = useState(true)
 

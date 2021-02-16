@@ -25,8 +25,6 @@ function EditUser(props: any): ReactElement {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const [newName, setNewName] = useState('')
-    const [newEmail, setNewEmail] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
 
@@ -37,49 +35,56 @@ function EditUser(props: any): ReactElement {
     const [vldNewPwd, setVldNewPwd] = useState<[string, string]>(["", ""])
     const [vldNewConfirmPwd, setVldNewConfirmPwd] = useState<[string, string]>(["", ""])
 
-    function validateName(value: string) {
-        setName(value)
+    const validate = () => {
+        let error = false
 
-        if (value.length >= 4) {
-            setVldName(["valide", ""])
-        } else {
+        setVldName(["valide", ""])
+        setVldEmail(["valide", ""])
+        setVldPwd(["valide", ""])
+        setVldNewPwd(["valide", ""])
+        setVldNewConfirmPwd(["valide", ""])
+
+        // Valide o nome
+        if (name.length < 4) {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
+            error = true
         }
-        if (value === "") setVldName(["", ""])
-    }
+        if (name.length == 0) {
+            setVldName(["invalide", "Forneça um nome"])
+            error = true
+        }
 
-    function validateEmail(value: string) {
-        setEmail(value)
-        const atSign = value.indexOf('@')
+        // Valide o E-mail
+        const atSign = email.indexOf('@')
 
-        if (atSign != -1) {
-            setVldEmail(["valide", ""])
-        } else {
+        if (atSign == -1) {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
+            error = true
         }
-        if (value === "") setVldEmail(["", ""])
-    }
+        if (email.length == 0) {
+            setVldEmail(["invalide", "Forneça um e-mail"])
+            error = true
+        }
 
-    function validateNewPassword(value: string) {
-        setNewPassword(value)
-
-        if (value.length >= 8) {
-            setVldNewPwd(["valide", ""])
-        } else {
+        // Valide a nova senha
+        if (newPassword.length > 0 && newPassword.length < 8) {
             setVldNewPwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
+            error = true
         }
-        if (value === "") setVldNewPwd(["", ""])
-    }
 
-    function validateNewConfirmPassword(value: string) {
-        setConfirmNewPassword(value)
-
-        if (value === newPassword) {
-            setVldNewConfirmPwd(["valide", ""])
-        } else {
+        // Valide a confirmaçõa da nova senha
+        if (confirmNewPassword.length > 0 && confirmNewPassword.length == 0 || confirmNewPassword != newPassword) {
             setVldNewConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+            error = true
         }
-        if (value === "") setVldNewConfirmPwd(["", ""])
+
+        // Valide a senha
+        if (password.length == 0) {
+            setVldPwd(["invalide", "Forneça sua senha antiga"])
+            error = true
+        }
+
+        return !error
     }
 
     //#endregion
@@ -87,49 +92,27 @@ function EditUser(props: any): ReactElement {
     function handleCreateUser(e: FormEvent) {
         e.preventDefault();
 
-        const storage: any = localStorage.getItem("users")
+        if (validate()) {
 
-        const data = JSON.parse(storage)
+            const storage: any = localStorage.getItem("users")
 
-        const userExist = data.find((user: any) => {
-            if (user.name === newName) {
-                setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
-                return name
+            const data = JSON.parse(storage)
+
+            if (password != user.password) {
+                setVldPwd(["invalide", "Senha incorreta"])
             } else {
-                setVldName(["valide", ""])
-            }
-
-            if (user.email == newEmail) {
-                setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
-                return email
-            } else {
-                setVldEmail(["valide", ""])
-            }
-        })
-
-        if (password != user.password) {
-            setVldPwd(["invalide", "Senha incorreta"])
-        } else {
-
-            if (userExist == undefined) {
-                const isNewName = newName ? newName : name
-                const isNewEmail = newEmail ? newEmail : email
-                const isNewPassword = newPassword ? newPassword : password
-
+                const isNewPass = newPassword ? newPassword : password
                 const changes = {
                     id: user.id,
-                    name: isNewName,
-                    email: isNewEmail,
-                    password: isNewPassword
+                    name: name,
+                    email: email,
+                    password: isNewPass
                 }
 
-                console.log(changes)
                 const index = data.findIndex((item: any) => {
                     return item.id == user.id
                 })
-                console.log(index)
                 data.splice(index, 1, changes)
-                console.log(data)
 
                 localStorage.setItem("users", JSON.stringify(data))
 
@@ -137,6 +120,34 @@ function EditUser(props: any): ReactElement {
 
                 history.push('/')
             }
+        }
+    }
+
+    function handleDeleteUser(e: FormEvent) {
+        e.preventDefault();
+
+        if (password.length == 0) {
+            setVldPwd(["invalide", "Forneça sua senha"])
+            return
+        }
+
+        if (password != user.password) {
+            setVldPwd(["invalide", "Senha incorreta"])
+        } else {
+            const storage: any = localStorage.getItem("users")
+
+            const data = JSON.parse(storage)
+
+            const index = data.findIndex((item: any) => {
+                return item.id == user.id
+            })
+            data.splice(index, 1)
+
+            localStorage.setItem("users", JSON.stringify(data))
+
+            alert('Conta excluída com sucesso!')
+
+            history.push('/')
         }
     }
 
@@ -150,28 +161,40 @@ function EditUser(props: any): ReactElement {
                         <span>Você pode editar apenas os dados que desejar</span>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
-                            onChange={e => validateName(e.target.value)} 
+                            onChange={e => {
+                                setVldName(["", ""])
+                                setName(e.target.value)
+                            }}
                             autoFocus={true}
                             value={name}
                             validate={vldName}
                         />
 
                         <Input inputType="text" label="Email" name="email" placeholder="Ex: exemplo@email.com"
-                            onChange={e => validateEmail(e.target.value)}
+                            onChange={e => {
+                                setVldEmail(["", ""])
+                                setEmail(e.target.value)
+                            }}
                             value={email}
                             validate={vldEmail}
                         />
 
-                        <hr/>
+                        <hr />
                         <h3>Editar senha</h3>
                         <Input inputType="password" label="Nova senha" name="new_password" placeholder="********"
-                            onChange={e => validateNewPassword(e.target.value)}
+                            onChange={e => {
+                                setVldNewPwd(["", ""])
+                                setNewPassword(e.target.value)
+                            }}
                             value={newPassword}
                             validate={vldNewPwd}
                         />
 
                         <Input inputType="password" label="Repita a nova senha" name="confirm_password" placeholder="********"
-                            onChange={e => validateNewConfirmPassword(e.target.value)}
+                            onChange={e => {
+                                setVldNewConfirmPwd(["", ""])
+                                setConfirmNewPassword(e.target.value)
+                            }}
                             value={confirmNewPassword}
                             validate={vldNewConfirmPwd}
                         />
@@ -181,12 +204,15 @@ function EditUser(props: any): ReactElement {
                             onChange={e => {
                                 setVldPwd(["", ""])
                                 setPassword(e.target.value)
-                            } }
+                            }}
                             value={password}
                             validate={vldPwd}
                         />
 
                         <button type="submit">Salvar</button>
+                    </form>
+                    <form onSubmit={handleDeleteUser} >
+                        <button type="submit">Excuir conta</button>
                     </form>
                 </div>
             </div>

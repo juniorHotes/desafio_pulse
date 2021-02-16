@@ -20,10 +20,7 @@ function Login(): ReactElement {
         const storage: any = localStorage.getItem("users")
         const data = JSON.parse(storage)
 
-        console.log(data)
-
         setUserData(data)
-
     }, [])
 
 
@@ -49,7 +46,7 @@ function Login(): ReactElement {
             if (password == user?.password) {
                 setValidatePwd(["", ""])
 
-                sessionStorage.setItem(user.name, user.name)
+                sessionStorage.setItem(user.id, user.name)
 
                 alert("Login feito com sucesso")
                 history.push('/')
@@ -81,7 +78,7 @@ function Login(): ReactElement {
                             validate={vldPwd}
                         />
 
-                        <button disabled={false} type="submit">Entrar</button>
+                        <button type="submit">Entrar</button>
                     </form>
                 </div>
 

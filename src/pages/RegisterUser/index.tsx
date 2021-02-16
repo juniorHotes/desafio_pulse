@@ -19,139 +19,93 @@ function RegisterUser(): ReactElement {
     const [vldPwd, setValidatePwd] = useState<[string, string]>(["", ""])
     const [vldConfirmPwd, setVldConfirmPwd] = useState<[string, string]>(["", ""])
 
-    // function validateName(value: string) {
-    //     setName(value)
+    const validate = () => {
+        let error = false
 
-    //     if (value.length >= 4) {
-    //         setVldName(["valide", ""])
-    //     } else {
-    //         setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
-    //     } 
-    //     if(value === "") setVldName(["", ""])
-    // }
+        setVldName(["valide", ""])
+        setVldEmail(["valide", ""])
+        setValidatePwd(["valide", ""])
+        setVldConfirmPwd(["valide", ""])
 
-    // function validateEmail(value: string) {
-    //     setEmail(value)
-    //     const atSign = value.indexOf('@')
-
-    //     if (atSign != -1) {
-    //         setVldEmail(["valide", ""])
-    //     } else {
-    //         setVldEmail(["invalide", "Forneça um E-mail válido"])
-    //     }
-    //     if(value === "") setVldEmail(["", ""])
-    // }
-
-    // function validatePassword(value: string) {
-    //     setPassword(value)
-
-    //     if (value.length >= 8) {
-    //         setValidatePwd(["valide", ""])
-    //     } else {
-    //         setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
-    //     }
-    //     if(value === "") setValidatePwd(["", ""])
-    // }
-
-    // function validateConfirmPassword(value: string) {
-    //     setConfirmPassword(value)
-
-    //     if (value === password) {
-    //         setVldConfirmPwd(["valide", ""])
-    //     } else {
-    //         setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
-    //     }
-    //     if(value === "") setVldConfirmPwd(["", ""])
-    // }
-
-    function validateName() {
-        if (name.length >= 4) {
-            setVldName(["valide", ""])
-        } 
-        if (name.length < 4){
+        // Valide o nome
+        if (name.length < 4) {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
-        } 
-        if (name != '' && name.length >= 4) {
-            setVldName(["valide", ""])
-        } 
+            error = true
+        }
         if (name.length == 0) {
             setVldName(["invalide", "Forneça um nome"])
+            error = true
         }
-    }
 
-    function validateEmail() {
+        // Valide o E-mail
         const atSign = email.indexOf('@')
 
-        if (atSign != -1) {
-            setVldEmail(["valide", ""])
-        } 
-        if (atSign == -1){
+        if (atSign == -1) {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
+            error = true
         }
         if (email.length == 0) {
             setVldEmail(["invalide", "Forneça um e-mail"])
+            error = true
         }
-    }
 
-    function validatePassword() {
-        if (password.length >= 8) {
-            setValidatePwd(["valide", ""])
-        } 
+        // Valide a senha
         if (password.length < 8) {
             setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
+            error = true
         }
         if (password.length == 0) {
             setValidatePwd(["invalide", "Forneça uma senha"])
+            error = true
         }
-    }
 
-    function validateConfirmPassword() {
-
-        if (confirmPassword == password && confirmPassword.length > 0) {
-            setVldConfirmPwd(["valide", ""])
-        } 
-        if (confirmPassword.length > 0 && confirmPassword != password) {
+        // Valide a confirmaçõa da senha
+        if (confirmPassword.length == 0 || confirmPassword != password) {
             setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+            error = true
         }
-    }
 
+        return !error
+    }
     //#endregion
 
     function handleCreateUser(e: FormEvent) {
         e.preventDefault();
 
-        const storage = localStorage.getItem("users")
+        if (validate()) {
+            const storage = localStorage.getItem("users")
 
-        if (storage == undefined) {
-            localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
-        } else {
-            const data = JSON.parse(storage)
+            if (storage == undefined) {
+                localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
+            } else {
+                const data = JSON.parse(storage)
 
-            const userExist = data.find((user: any) => {
-                if (user.name === name) {
-                    setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
-                    return name
-                } else {
-                    setVldName(["valide", "Ok!"])
+                const userExist = data.find((user: any) => {
+                    if (user.name === name) {
+                        setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
+                        return name
+                    } else {
+                        setVldName(["valide", ""])
+                    }
+
+                    if (user.email == email) {
+                        setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
+                        return email
+                    } else {
+                        setVldEmail(["valide", ""])
+                    }
+                })
+
+                if (userExist == undefined) {
+                    const id = data[data.length -1].id +1
+                    data.push({ id, name, email, password })
+
+                    localStorage.setItem("users", JSON.stringify(data))
+
+                    alert('Você foi cadastado com sucesso!\nMuito obrigado!')
+
+                    history.push('/login')
                 }
-
-                if (user.email == email) {
-                    setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
-                    return email
-                } else {
-                    setVldEmail(["valide", "Ok!"])
-                }
-            })
-
-            if (userExist == undefined) {
-                const id = data.length + 1
-                data.push({ id, name, email, password })
-
-                localStorage.setItem("users", JSON.stringify(data))
-
-                alert('Você foi cadastado com sucesso!\nMuito obrigado!')
-
-                history.push('/login')
             }
         }
     }
@@ -166,29 +120,37 @@ function RegisterUser(): ReactElement {
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
                             autoFocus={true}
-                            onChange={e => setName(e.target.value)}
-                            onBlur={validateName}
+                            onChange={e => {
+                                setVldName(["", ""])
+                                setName(e.target.value)
+                            }}
                             value={name}
                             validate={vldName}
                         />
 
                         <Input inputType="text" label="Email" name="email" placeholder="Ex: exemplo@email.com"
-                            onChange={e => setEmail(e.target.value)}
-                            onBlur={validateEmail}
+                            onChange={e => {
+                                setVldEmail(["", ""])
+                                setEmail(e.target.value)
+                            }}
                             value={email}
                             validate={vldEmail}
                         />
 
                         <Input inputType="password" label="Senha" name="password" placeholder="********"
-                            onChange={e => setPassword(e.target.value)}
-                            onBlur={validatePassword}
+                            onChange={e => {
+                                setValidatePwd(["", ""])
+                                setPassword(e.target.value)
+                            }}
                             value={password}
                             validate={vldPwd}
                         />
 
                         <Input inputType="password" label="Repita a senha" name="confirmPassword" placeholder="********"
-                            onChange={e => setConfirmPassword(e.target.value)}
-                            onBlur={validateConfirmPassword}
+                            onChange={e => {
+                                setVldConfirmPwd(["", ""])
+                                setConfirmPassword(e.target.value)
+                            }}
                             value={confirmPassword}
                             validate={vldConfirmPwd}
                         />
