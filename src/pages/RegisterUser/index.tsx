@@ -18,50 +18,101 @@ function RegisterUser(): ReactElement {
     const [vldEmail, setVldEmail] = useState<[string, string]>(["", ""])
     const [vldPwd, setValidatePwd] = useState<[string, string]>(["", ""])
     const [vldConfirmPwd, setVldConfirmPwd] = useState<[string, string]>(["", ""])
-    
-    function validateName(value: string) {
-        setName(value)
 
-        if (value.length >= 4) {
+    // function validateName(value: string) {
+    //     setName(value)
+
+    //     if (value.length >= 4) {
+    //         setVldName(["valide", ""])
+    //     } else {
+    //         setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
+    //     } 
+    //     if(value === "") setVldName(["", ""])
+    // }
+
+    // function validateEmail(value: string) {
+    //     setEmail(value)
+    //     const atSign = value.indexOf('@')
+
+    //     if (atSign != -1) {
+    //         setVldEmail(["valide", ""])
+    //     } else {
+    //         setVldEmail(["invalide", "Forneça um E-mail válido"])
+    //     }
+    //     if(value === "") setVldEmail(["", ""])
+    // }
+
+    // function validatePassword(value: string) {
+    //     setPassword(value)
+
+    //     if (value.length >= 8) {
+    //         setValidatePwd(["valide", ""])
+    //     } else {
+    //         setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
+    //     }
+    //     if(value === "") setValidatePwd(["", ""])
+    // }
+
+    // function validateConfirmPassword(value: string) {
+    //     setConfirmPassword(value)
+
+    //     if (value === password) {
+    //         setVldConfirmPwd(["valide", ""])
+    //     } else {
+    //         setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+    //     }
+    //     if(value === "") setVldConfirmPwd(["", ""])
+    // }
+
+    function validateName() {
+        if (name.length >= 4) {
             setVldName(["valide", ""])
-        } else {
+        } 
+        if (name.length < 4){
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
         } 
-        if(value === "") setVldName(["", ""])
+        if (name != '' && name.length >= 4) {
+            setVldName(["valide", ""])
+        } 
+        if (name.length == 0) {
+            setVldName(["invalide", "Forneça um nome"])
+        }
     }
 
-    function validateEmail(value: string) {
-        setEmail(value)
-        const atSign = value.indexOf('@')
+    function validateEmail() {
+        const atSign = email.indexOf('@')
 
         if (atSign != -1) {
             setVldEmail(["valide", ""])
-        } else {
+        } 
+        if (atSign == -1){
             setVldEmail(["invalide", "Forneça um E-mail válido"])
         }
-        if(value === "") setVldEmail(["", ""])
+        if (email.length == 0) {
+            setVldEmail(["invalide", "Forneça um e-mail"])
+        }
     }
 
-    function validatePassword(value: string) {
-        setPassword(value)
-
-        if (value.length >= 8) {
+    function validatePassword() {
+        if (password.length >= 8) {
             setValidatePwd(["valide", ""])
-        } else {
+        } 
+        if (password.length < 8) {
             setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
         }
-        if(value === "") setValidatePwd(["", ""])
+        if (password.length == 0) {
+            setValidatePwd(["invalide", "Forneça uma senha"])
+        }
     }
 
-    function validateConfirmPassword(value: string) {
-        setConfirmPassword(value)
+    function validateConfirmPassword() {
 
-        if (value === password) {
+        if (confirmPassword == password && confirmPassword.length > 0) {
             setVldConfirmPwd(["valide", ""])
-        } else {
+        } 
+        if (confirmPassword.length > 0 && confirmPassword != password) {
             setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
         }
-        if(value === "") setVldConfirmPwd(["", ""])
     }
 
     //#endregion
@@ -114,25 +165,30 @@ function RegisterUser(): ReactElement {
                         <span>Todos os campos são obrigatórios</span>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
-                            onChange={e => validateName(e.target.value)}
+                            autoFocus={true}
+                            onChange={e => setName(e.target.value)}
+                            onBlur={validateName}
                             value={name}
                             validate={vldName}
                         />
 
                         <Input inputType="text" label="Email" name="email" placeholder="Ex: exemplo@email.com"
-                            onChange={e => validateEmail(e.target.value)}
+                            onChange={e => setEmail(e.target.value)}
+                            onBlur={validateEmail}
                             value={email}
                             validate={vldEmail}
                         />
 
                         <Input inputType="password" label="Senha" name="password" placeholder="********"
-                            onChange={e => validatePassword(e.target.value)}
+                            onChange={e => setPassword(e.target.value)}
+                            onBlur={validatePassword}
                             value={password}
                             validate={vldPwd}
                         />
 
                         <Input inputType="password" label="Repita a senha" name="confirmPassword" placeholder="********"
-                            onChange={e => validateConfirmPassword(e.target.value)}
+                            onChange={e => setConfirmPassword(e.target.value)}
+                            onBlur={validateConfirmPassword}
                             value={confirmPassword}
                             validate={vldConfirmPwd}
                         />

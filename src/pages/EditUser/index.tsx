@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, FormEvent } from 'react'
+import React, { ReactElement, useState, FormEvent, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
@@ -8,24 +8,35 @@ import './styles.css'
 function EditUser(props: any): ReactElement {
     const history = useHistory()
 
-    const storage: any = localStorage.getItem("users")
-    const data = JSON.parse(storage)
+    useEffect(() => {
+        const storage: any = localStorage.getItem("users")
+        const data = JSON.parse(storage)
 
-    const user = data.filter((item: any) => item.id == props.match.params.id)[0]
+        const user = data.filter((item: any) => item.id == props.match.params.id)[0]
+        setUser(user)
 
-    console.log(data)
+        setName(user.name)
+        setEmail(user.email)
+    }, [])
 
-    const [name, setName] = useState(user.name)
-    const [email, setEmail] = useState(user.email)
+    const [user, setUser] = useState<any>()
+
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
+
+    const [newName, setNewName] = useState('')
+    const [newEmail, setNewEmail] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [confirmNewPassword, setConfirmNewPassword] = useState('')
 
     //#region VALIDAÇÃO DE FORMULÁRIO
     const [vldName, setVldName] = useState<[string, string]>(["", ""])
     const [vldEmail, setVldEmail] = useState<[string, string]>(["", ""])
-    const [vldPwd, setValidatePwd] = useState<[string, string]>(["", ""])
-    const [vldConfirmPwd, setVldConfirmPwd] = useState<[string, string]>(["", ""])
-    
+    const [vldPwd, setVldPwd] = useState<[string, string]>(["", ""])
+    const [vldNewPwd, setVldNewPwd] = useState<[string, string]>(["", ""])
+    const [vldNewConfirmPwd, setVldNewConfirmPwd] = useState<[string, string]>(["", ""])
+
     function validateName(value: string) {
         setName(value)
 
@@ -33,8 +44,8 @@ function EditUser(props: any): ReactElement {
             setVldName(["valide", ""])
         } else {
             setVldName(["invalide", "Forneça um nome maior que 4 caractérs"])
-        } 
-        if(value === "") setVldName(["", ""])
+        }
+        if (value === "") setVldName(["", ""])
     }
 
     function validateEmail(value: string) {
@@ -46,29 +57,29 @@ function EditUser(props: any): ReactElement {
         } else {
             setVldEmail(["invalide", "Forneça um E-mail válido"])
         }
-        if(value === "") setVldEmail(["", ""])
+        if (value === "") setVldEmail(["", ""])
     }
 
-    function validatePassword(value: string) {
-        setPassword(value)
+    function validateNewPassword(value: string) {
+        setNewPassword(value)
 
         if (value.length >= 8) {
-            setValidatePwd(["valide", ""])
+            setVldNewPwd(["valide", ""])
         } else {
-            setValidatePwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
+            setVldNewPwd(["invalide", "Sua senha deve conter no mínimo 8 dígitos"])
         }
-        if(value === "") setValidatePwd(["", ""])
+        if (value === "") setVldNewPwd(["", ""])
     }
 
-    function validateConfirmPassword(value: string) {
-        setConfirmPassword(value)
+    function validateNewConfirmPassword(value: string) {
+        setConfirmNewPassword(value)
 
-        if (value === password) {
-            setVldConfirmPwd(["valide", ""])
+        if (value === newPassword) {
+            setVldNewConfirmPwd(["valide", ""])
         } else {
-            setVldConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
+            setVldNewConfirmPwd(["invalide", "Repita a mesma senha que dígitou acima"])
         }
-        if(value === "") setVldConfirmPwd(["", ""])
+        if (value === "") setVldNewConfirmPwd(["", ""])
     }
 
     //#endregion
@@ -76,33 +87,53 @@ function EditUser(props: any): ReactElement {
     function handleCreateUser(e: FormEvent) {
         e.preventDefault();
 
-        if (storage == undefined) {
-            localStorage.setItem("users", JSON.stringify([{ id: 1, name, email, password }]))
+        const storage: any = localStorage.getItem("users")
+
+        const data = JSON.parse(storage)
+
+        const userExist = data.find((user: any) => {
+            if (user.name === newName) {
+                setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
+                return name
+            } else {
+                setVldName(["valide", ""])
+            }
+
+            if (user.email == newEmail) {
+                setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
+                return email
+            } else {
+                setVldEmail(["valide", ""])
+            }
+        })
+
+        if (password != user.password) {
+            setVldPwd(["invalide", "Senha incorreta"])
         } else {
 
-            const userExist = data.find((user: any) => {
-                if (user.name === name) {
-                    setVldName(["invalide", "Este nome de usuário já existe, forneça um outro nome"])
-                    return name
-                } else {
-                    setVldName(["valide", "Ok!"])
-                }
-
-                if (user.email == email) {
-                    setVldEmail(["invalide", "Este email já está cadastrado, forneça um outro email"])
-                    return email
-                } else {
-                    setVldEmail(["valide", "Ok!"])
-                }
-            })
-
             if (userExist == undefined) {
-                const id = data.length + 1
-                data.push({ id, name, email, password })
+                const isNewName = newName ? newName : name
+                const isNewEmail = newEmail ? newEmail : email
+                const isNewPassword = newPassword ? newPassword : password
+
+                const changes = {
+                    id: user.id,
+                    name: isNewName,
+                    email: isNewEmail,
+                    password: isNewPassword
+                }
+
+                console.log(changes)
+                const index = data.findIndex((item: any) => {
+                    return item.id == user.id
+                })
+                console.log(index)
+                data.splice(index, 1, changes)
+                console.log(data)
 
                 localStorage.setItem("users", JSON.stringify(data))
 
-                alert('Você foi cadastado com sucesso!\nMuito obrigado!')
+                alert('Alterações realizadas com sucesso!')
 
                 history.push('/')
             }
@@ -116,10 +147,11 @@ function EditUser(props: any): ReactElement {
                 <div className="container-register">
                     <form onSubmit={handleCreateUser} >
                         <h1>Edite seus dados de cadastro</h1>
-                        <span>Edite apenas os dados que desejar</span>
+                        <span>Você pode editar apenas os dados que desejar</span>
 
                         <Input inputType="text" label="Nome" name="name" placeholder="Ex: Jhon"
-                            onChange={e => validateName(e.target.value)}
+                            onChange={e => validateName(e.target.value)} 
+                            autoFocus={true}
                             value={name}
                             validate={vldName}
                         />
@@ -130,23 +162,26 @@ function EditUser(props: any): ReactElement {
                             validate={vldEmail}
                         />
 
+                        <hr/>
                         <h3>Editar senha</h3>
-
                         <Input inputType="password" label="Nova senha" name="new_password" placeholder="********"
-                            onChange={e => validateConfirmPassword(e.target.value)}
-                            value={confirmPassword}
-                            validate={vldConfirmPwd}
+                            onChange={e => validateNewPassword(e.target.value)}
+                            value={newPassword}
+                            validate={vldNewPwd}
                         />
 
                         <Input inputType="password" label="Repita a nova senha" name="confirm_password" placeholder="********"
-                            onChange={e => validateConfirmPassword(e.target.value)}
-                            value={confirmPassword}
-                            validate={vldConfirmPwd}
+                            onChange={e => validateNewConfirmPassword(e.target.value)}
+                            value={confirmNewPassword}
+                            validate={vldNewConfirmPwd}
                         />
-                        <hr/>
+                        <hr />
                         <h4>Forneça sua antiga senha para confirmar as alterações</h4>
                         <Input inputType="password" label="Senha antiga" name="password" placeholder="********"
-                            onChange={e => validatePassword(e.target.value)}
+                            onChange={e => {
+                                setVldPwd(["", ""])
+                                setPassword(e.target.value)
+                            } }
                             value={password}
                             validate={vldPwd}
                         />

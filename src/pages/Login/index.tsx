@@ -44,10 +44,10 @@ function Login(): ReactElement {
         if (user == undefined) {
             setVldName(["invalide", "Este usuário não está cadastrado"])
         } else {
-            setVldName(["valide", "Ok!"])
+            setVldName(["", ""])
 
             if (password == user?.password) {
-                setValidatePwd(["valide", "Ok!"])
+                setValidatePwd(["", ""])
 
                 sessionStorage.setItem(user.name, user.name)
 
